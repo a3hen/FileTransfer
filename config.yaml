@@ -1,0 +1,8 @@
+node:
+  - ip: 47.99.219.219
+    password: guitqil123A
+#  - ip: 113.103.110.251
+#    password: password
+
+#scp C:/EFI/test.txt root@47.99.219.219:/root/test
+#scp root@47.99.219.219:/root/test/test.txt C:/EFI/
