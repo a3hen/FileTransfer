@@ -1,4 +1,3 @@
-import paramiko
 import yaml
 import argparse
 import subprocess
@@ -94,37 +93,37 @@ class ReadConfig() :
         return list
 
 
-class Ssh() :   #暂时用不上此类，所有操作都是在本地进行
-    def __init__(self,ip,password,port=22,):
-        self.ip = ip
-        self.username = 'root'
-        self.password = password
-        self.port = port
-        self.SSHConnection = None
-        self.connect()
-
-    def connect(self):
-            objSSHClient = paramiko.SSHClient()
-            objSSHClient.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            objSSHClient.connect(hostname=self.ip,
-                                 port=self.port,
-                                 username=self.username,
-                                 password=self.password,)
-            self.SSHConnection = objSSHClient
-
-    def exec_command(self,command):
-        if self.SSHConnection:
-            stdin, stdout, stderr = self.SSHConnection.exec_command(command)
-            data = stdout.read()
-            data = data.decode('utf-8')
-            return data
+# class Ssh() :   #暂时用不上此类，所有操作都是在本地进行
+#     def __init__(self,ip,password,port=22,):
+#         self.ip = ip
+#         self.username = 'root'
+#         self.password = password
+#         self.port = port
+#         self.SSHConnection = None
+#         self.connect()
+#
+#     def connect(self):
+#             objSSHClient = paramiko.SSHClient()
+#             objSSHClient.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+#             objSSHClient.connect(hostname=self.ip,
+#                                  port=self.port,
+#                                  username=self.username,
+#                                  password=self.password,)
+#             self.SSHConnection = objSSHClient
+#
+#     def exec_command(self,command):
+#         if self.SSHConnection:
+#             stdin, stdout, stderr = self.SSHConnection.exec_command(command)
+#             data = stdout.read()
+#             data = data.decode('utf-8')
+#             return data
 
 
 
 if __name__ == '__main__' :
     config_list = ReadConfig().get_list()
     args = arg()
-    print(args)
+    # print(args)
 
 
 
