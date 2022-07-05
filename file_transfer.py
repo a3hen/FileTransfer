@@ -155,7 +155,7 @@ class Ssh():
 def download(args):
     file_name = extrace_file_name(args.source)
     for node in config_list:
-        path = f'{args.target}{node[0]}\\'  # Windows用"\"即在此用"\\"，linux用"/,此处为已经加上了自建文件的路径"
+        path = f'{args.target}{node[0]}/'  # Windows用"\"即在此用"\\"，linux用"/,此处为已经加上了自建文件的路径"
 
         if not os.path.isdir(path): #如果对应node的文件夹不存在则创建
             mkdir_file = f"mkdir {path}"
@@ -179,8 +179,8 @@ def download(args):
                 local_pathname = os.path.split(source)[-1]  # 远程下载的文件名 test
                 real_local_Path = path + local_pathname  # 远程下载后保存的路径，包括目录名 C:/EFI/test
 
-                if not target[-1] == '\\':  # 排除/root/test/的情况，修正为/root/test
-                    target = target + '\\'
+                if not target[-1] == '/':  # 排除/root/test/的情况，修正为/root/test
+                    target = target + '/'
                     print(f"下载路径格式有误，更正为{target}")
                 else:
                     print("下载路径格式正确")
@@ -191,7 +191,7 @@ def download(args):
                     print("检测到路径存在，即将开始下载")
 
                 if not os.path.isdir(real_local_Path):  # 如果下载的根文件不存在，则创建，创建test
-                    mkdir_file2 = f'md {real_local_Path}'
+                    mkdir_file2 = f'mkdir {real_local_Path}'
                     subprocess.run(mkdir_file2, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                                    encoding='UTF-8',
                                    timeout=100)
@@ -203,15 +203,13 @@ def download(args):
                     try:
                         testfiles = test_sftp.listdir_attr(filepath)
                         if testfiles == [] and os.path.split(off_path_name)[0] == '/':
-                            abs = off_path_name
-                            abs_path = abs.replace("/", "\\")  # 删除
+                            abs_path = off_path_name
                     except:
-                        abs = os.path.split(off_path_name)[0]
-                        abs_path = abs.replace("/", "\\")  # 删除
+                        abs_path = os.path.split(off_path_name)[0]
 
                     reward_local_path = real_local_Path + abs_path
                     if not reward_local_path == '/':
-                        subprocess.run(f'md {reward_local_path}', shell=True, stdout=subprocess.PIPE,
+                        subprocess.run(f'mkdir {reward_local_path}', shell=True, stdout=subprocess.PIPE,
                                        stderr=subprocess.PIPE, encoding='UTF-8',
                                        timeout=100)
 
@@ -221,7 +219,7 @@ def download(args):
                             pass
                     except:
                         abs_file = os.path.split(filepath)[1]  # 期望下载的文件名
-                        to_local = reward_local_path + '\\' + abs_file  # 下载文件到远端的路径，删除
+                        to_local = reward_local_path + '/' + abs_file  # 下载文件到远端的路径，\\删除
                         obj_ssh.sftp_get(filepath, to_local)
 
         except:
