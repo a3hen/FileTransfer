@@ -75,6 +75,7 @@ def arg():
     parser_upload.set_defaults(func=upload)
     parser_download.set_defaults(func=download)
     parser.set_defaults(func=err_info())
+    parser.print_help()
 
     args = parser.parse_args()
     args.func(args)
