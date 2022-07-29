@@ -137,9 +137,8 @@ class Ssh():
                                        username=self.username,
                                        password=self.password, )
             self.transport.connect(username=self.username, password=self.password)
-            print("ssh and sftp success")
         except:
-            print("ssh password  connect failed")
+            print("SSH connection failed,please check the hostname or password")
 
     def close(self):
         self.sftp.close()
@@ -148,16 +147,14 @@ class Ssh():
     def sftp_get(self, remotefile, localfile):
         try:
             self.sftp.get(remotefile, localfile)
-            print("sftp get successful")
         except:
-            print("sftp get failed")
+            print("SFTP connection failed")
 
     def sftp_put(self, localfile, remotefile):
         try:
             self.sftp.put(localfile, remotefile)
-            print("sftp put successful")
         except:
-            print("sftp put failed")
+            print("SFTP put failed")
 
 
 def download(args):
@@ -170,19 +167,20 @@ def download(args):
 
     file_name = extrace_file_name(args.source)
     for node in config_list:
+        print(f"Start downloading{args.source}")
         path = f'{args.target}{node[0]}/'  # Windows用"\"即在此用"\\"，linux用"/,此处为已经加上了自建文件的路径"
 
         if not os.path.isdir(path): #如果对应node的文件夹不存在则创建
             mkdir_file = f"mkdir {path}"
             subprocess.run(mkdir_file, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding='utf-8',
                            timeout=100)
-            print(f"node folder has been created:{path}")
+            print(f"Node folder has been created:{path}")
 
         one_test = Ssh(node[0], node[1])
         one_test_sftp = one_test.sftp
         try:
             teststr = one_test_sftp.stat(args.source)
-            print("文件/文件夹检测存在，可以进行下载")
+            print("The file/folder is detected and can be downloaded")
             try:
                 testfile2 = one_test_sftp.listdir_attr(args.source)
                 if testfile2 is not None:
@@ -199,14 +197,14 @@ def download(args):
 
                     if not target[-1] == '/':  # 排除/root/test/的情况，修正为/root/test
                         target = target + '/'
-                        print(f"下载路径格式有误，更正为{target}")
+                        print(f"Download path error，change to {target}")
                     else:
-                        print("下载路径格式正确")
+                        print("Download path is correct")
 
                     if not os.path.isdir(target):
-                        print("输入的下载路径不存在，请重新输入")
+                        print("Download path entered does not exist, please re output")
                     else:
-                        print("检测到路径存在，即将开始下载")
+                        print("Download path is correct, and the download will begin soon")
 
                     if not os.path.isdir(real_local_Path):  # 如果下载的根文件不存在，则创建，创建test
                         mkdir_file2 = f'mkdir {real_local_Path}'
@@ -246,11 +244,13 @@ def download(args):
                     one_obj_ssh = Ssh(node[0], node[1])
                     one_obj_ssh.sftp_get(args.source, one_target)
                     one_obj_ssh.close()
-                    print("file download successful")
+                    print("File download successful")
                 except:
-                    print("file download failed")
+                    print("File download failed")
         except:
-            print("文件/文件夹检测不存在，请检查路径是否正确")
+            print("The file/folder does not exist, please check the path")
+
+        print(f"Download complete{args.source}")
 
 
 def upload(args):
@@ -265,19 +265,18 @@ def upload(args):
         target = f'{args.target}{file_name}'
         try:
             for node in config_list:
+                print(f'Start uploading{args.target}')
                 obj_ssh = Ssh(node[0], node[1])
                 obj_sftp = obj_ssh.sftp
                 try:
                     teststr = obj_sftp.stat(args.target)
-                    print("路径检测存在")
                 except:
-                    print("路径检测不存在，自动创建")
+                    print("Upload path does not exist, it is created automatically")
                     try:
                         obj_ssh.obj_SSHClient.exec_command(f"mkdir -p {args.target}")
                         teststr0 = obj_sftp.stat(args.target)
-                        print("路径创建成功")
                     except:
-                        print("路径创建失败")
+                        print("Path creation failed")
                 obj_ssh.sftp_put(args.source, target)
                 obj_ssh.close()
             print("file upload successful")
@@ -302,7 +301,7 @@ def upload(args):
             try:
                 obj_ssh.sftp.stat(args.target)
             except Exception as e :
-                print(f"输入的上传地址不存在，自动创建{args.target}")
+                print(f"Upload path does not exist, it is created automatically{args.target}")
                 obj_ssh.obj_SSHClient.exec_command(f'mkdir -p {args.target}')
             obj_ssh.obj_SSHClient.exec_command(f"mkdir -p {real_remote_Path}")
 
