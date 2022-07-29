@@ -294,6 +294,7 @@ def upload(args):
             node[0]:ip
             node[1]:password
             """
+            print(f'Start uploading{args.target}')
             obj_ssh = Ssh(node[0], node[1])
 
             local_pathname = os.path.split(args.source)[-1]  #本地上传的文件名 test
@@ -324,6 +325,8 @@ def upload(args):
                     abs_file = os.path.split(file_path)[1]  #期望上传的文件名
                     to_remote = reward_remote_path + '/' + abs_file #上传文件到远端的路径
                     obj_ssh.sftp_put(file_path,to_remote)
+
+            print("Upload successful")
 
             obj_ssh.close()
 

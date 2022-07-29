@@ -1,8 +1,0 @@
-上传: 
-source: /root/123
-
-1.mkdir /root/test/123
-2.mkdir /root/test/123/456
-3.sftp 
-
-target: /root/test/
