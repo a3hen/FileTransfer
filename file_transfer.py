@@ -167,14 +167,14 @@ def download(args):
 
     file_name = extrace_file_name(args.source)
     for node in config_list:
-        print(f"Start downloading{args.source}")
+        print(f"Start downloading: {args.source}")
         path = f'{args.target}{node[0]}/'  # Windows用"\"即在此用"\\"，linux用"/,此处为已经加上了自建文件的路径"
 
         if not os.path.isdir(path): #如果对应node的文件夹不存在则创建
             mkdir_file = f"mkdir {path}"
             subprocess.run(mkdir_file, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding='utf-8',
                            timeout=100)
-            print(f"Node folder has been created:{path}")
+            print(f"Node folder has been created: {path}")
 
         one_test = Ssh(node[0], node[1])
         one_test_sftp = one_test.sftp
@@ -250,7 +250,7 @@ def download(args):
         except:
             print("The file/folder does not exist, please check the path")
 
-        print(f"Download complete{args.source}")
+        print(f"Download complete: {args.source}")
 
 
 def upload(args):
@@ -265,7 +265,7 @@ def upload(args):
         target = f'{args.target}{file_name}'
         try:
             for node in config_list:
-                print(f'Start uploading{args.target}')
+                print(f'Start uploading: {args.target}')
                 obj_ssh = Ssh(node[0], node[1])
                 obj_sftp = obj_ssh.sftp
                 try:
@@ -294,7 +294,7 @@ def upload(args):
             node[0]:ip
             node[1]:password
             """
-            print(f'Start uploading{args.target}')
+            print(f'Start uploading: {args.target}')
             obj_ssh = Ssh(node[0], node[1])
 
             local_pathname = os.path.split(args.source)[-1]  #本地上传的文件名 test
@@ -302,7 +302,7 @@ def upload(args):
             try:
                 obj_ssh.sftp.stat(args.target)
             except Exception as e :
-                print(f"Upload path does not exist, it is created automatically{args.target}")
+                print(f"Upload path does not exist, it is created automatically: {args.target}")
                 obj_ssh.obj_SSHClient.exec_command(f'mkdir -p {args.target}')
             obj_ssh.obj_SSHClient.exec_command(f"mkdir -p {real_remote_Path}")
 
