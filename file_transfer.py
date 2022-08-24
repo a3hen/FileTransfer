@@ -114,15 +114,15 @@ class ReadConfig():
     def get_list(self):
         list = []
         for node in self.yaml_info["node"]:
-            list.append([node['ip'], node['password']])
+            list.append([node['ip'], node['password'],node['user']])
         return list
 
 
 class Ssh():
-    def __init__(self, ip, password):
+    def __init__(self, ip, password,user):
         self.ip = ip
         self.port = 22
-        self.username = 'root'
+        self.username = user
         self.password = password
         self.obj_SSHClient = paramiko.SSHClient()
         self.transport = paramiko.Transport((self.ip, self.port))
@@ -176,7 +176,7 @@ def download(args):
                            timeout=100)
             print(f"Node folder has been created: {path}")
 
-        one_test = Ssh(node[0], node[1])
+        one_test = Ssh(node[0], node[1],node[2])
         one_test_sftp = one_test.sftp
         try:
             teststr = one_test_sftp.stat(args.source)
@@ -188,7 +188,7 @@ def download(args):
                     source = args.source
                     target = args.target  # 测试，正式加入时改回linux方法 C:\\EFI\\
 
-                    obj_ssh = Ssh(node[0], node[1])
+                    obj_ssh = Ssh(node[0], node[1],node[2])
                     test_sftp = obj_ssh.sftp
                     all_files = get_all_files_in_remote_dir(test_sftp, source)
 
@@ -241,7 +241,7 @@ def download(args):
             except:
                 one_target = f'{path}{file_name}'
                 try:
-                    one_obj_ssh = Ssh(node[0], node[1])
+                    one_obj_ssh = Ssh(node[0], node[1],node[2])
                     one_obj_ssh.sftp_get(args.source, one_target)
                     one_obj_ssh.close()
                     print("File download successful")
@@ -266,7 +266,7 @@ def upload(args):
         try:
             for node in config_list:
                 print(f'Start uploading: {args.target}')
-                obj_ssh = Ssh(node[0], node[1])
+                obj_ssh = Ssh(node[0], node[1],node[2])
                 obj_sftp = obj_ssh.sftp
                 try:
                     teststr = obj_sftp.stat(args.target)
@@ -295,7 +295,7 @@ def upload(args):
             node[1]:password
             """
             print(f'Start uploading: {args.target}')
-            obj_ssh = Ssh(node[0], node[1])
+            obj_ssh = Ssh(node[0], node[1],node[2])
 
             local_pathname = os.path.split(args.source)[-1]  #本地上传的文件名 test
             real_remote_Path = args.target + '/' + local_pathname   #远程上传后的路径，包括目录名 /root/test/test

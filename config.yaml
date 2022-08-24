@@ -1,6 +1,7 @@
 node:
   - ip: 47.99.219.219
     password: guitqil123A
+    user: root
 #  - ip: 113.103.110.251
 #    password: password
 
